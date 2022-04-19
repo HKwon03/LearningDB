@@ -16,3 +16,7 @@ chap19 하고있음
 
 4월18일
 DB 시작. DB만 50여가지 정도 된다. Oracle 중점으로.
+
+4월19일
+VM에서 WS2019 지우고 다시 깔아서 다시 세팅해야 한다.
+Git, 소스트리, Oracle SQL, MSSQL, MySQL, 한글팩, HOME 폴더 세팅, 방화벽, IP뭐시기

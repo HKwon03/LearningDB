@@ -1,0 +1,181 @@
+DB 시작. DB만 50여가지 정도 된다. Oracle 중점으로. 설치가 반이다
+
+1. Oracle 설치
+   - 대규모, 미션크리티컬 솔루션(오류가 발생되면 절대 안되는 환경 예)은행망, 항공기이착륙시스템, 원자력제어시스템), 가격이 상당히 비싸다(1년에 2억원정도).
+
+2. MS-SQL 설치
+   - 중규모, 340만원 정도
+3. My-SQL 설치(Oracle인수하면서)
+   - 중규모, 무료 ==> 유료.
+4. MariaDB(Linux)
+   - 중규모, 무료
+
+oraclexe112_win64 -> disk1 -> setup -> 
+
+DB 암호 :
+   -14이상, 대문자, 소문자, 특수문자, 숫자
+
+Port : 데이터가 OSI 7Layer 에서 Application Layer에서 전송받는 통로
+   1번 ~ 65,535 포트까지 존재. TCP(신뢰성 있는 전송), UDP(신뢰성 없는 전송)
+   Well Known Port(잘 알려진 포트)
+      1번 ~ 1024번 : 
+	TCP 21 : FTP
+	TCP 22 : SSH
+	TCP 23 : Telnet
+	TCP 53 : DNS(영역전송)
+	UDP 53 : DNS(이름풀이)
+	TCP 80 : Web Server(www)
+	TCP 110 : POP3
+	TCP 443 : SSL(Https)
+
+	Oracle : TCP 1521 <== 'Oracle Database Listener'
+	Oracle HTTP Listener: 8080	<== 아파치 톰캣(8080) 과 충돌 나중에 쓰려면 변경해줘야한다.
+	MS-SQL : TCP 1433
+	My-SQL : TCP 3306
+
+시스템 계정 - 오라클에서 제공되는 기본 계정
+  - sys		: 오라클의 최고 관리자 계정 (Super user)
+  - system	: 오라클을 관리할 수 있는 계정, DataBase를 생성하는 권한은 없다.
+  - scott	: 비활성화 되어있음.  <처음 사용자를 위해서 쿼리를 배움을 위해 기본제공된 sample 계정>
+  - hr		: 비활성화 되어있음.  <처음 사용자를 위해서 쿼리를 배움을 위해 기본제공된 sample 계정>  <== Express Edition
+
+Windows 방화벽 세팅
+ - wf.msc	: 고급 방화벽(더 세밀하게 셋팅)
+    1. 인바운드 규칙(오른쪽클릭) => 2. 새규칙 => 3. 포트 => 4. TCP 1521 => 5. 연결 허용 => 
+    6. 도메인, 개인, 공용 모두체크 => 7. 이름 : Oracle_TCP_1521
+
+ - firewall.cpl	: 기본 방화벽
+
+
+
+
+
+
+오라클 관리툴
+ - TUI 관리툴 : SQLPlus, 간단하게 사용. Oracle 처음 설치시 sample(SCOTT, HR) 계정을 활성화.
+
+ - GUI 관리툴 : SQL Developer, 쿼리를 저장할 수 있고, 편리하게 사용.  <== 주로 사용.
+
+시스템 계정 활성화.(hr)(SQLPlus에서 )  <== sys, system 계정으로 접속해야 비활성 계정을 활성화 시킬수 있는 권한이 있다.
+show user
+
+connect sys/1234 as sysdba; (sys(최고계정)으로 Oracle 접속 비밀번호(1234)는 설치할때 설정했음)
+
+alter user hr identified by hr account unlock; (앞 hr 계정, by 뒤 hr 비밀번호) hr계정을 수정하고 암호는 hr으로 할당하고 락을 해제
+
+connect hr/hr
+
+테이블 생성 : 
+Create table abc ( a number not null, b number null);	<== 테이블 생성(abc). a, b 컬럼.
+insert into abc(1,2);	<== 테이블에 값을 넣기
+insert into abc(3,4);
+select * from abc;	<== 테이블의 내용 출력하기
+
+select * from employees;co
+
+
+실습 환경 세팅 : - WS 2019 VM
+  1. Oracle 11g Express Edition R2. 설치
+  2. hr 계정의 lock 해제.
+  3. sql developer 실행
+  4. EMP_EXAMPLE.sql 실행, 3테이블의 내용을 확인
+
+Pa55w.rd
+
+
+===========================================================
+
+MS-SQL 설치
+
+인스턴스 : 물리적인 서버장비에 MS-SQL(논리적 설치) 여러번 설치, 각각을 인스턴스라 호칭(서버서비스)
+   - 기본 인스턴스 : 제일 처음 설치(MSSQLSERVER)
+   - 명명 인스턴스 : 두번째 설치부터는 직접 인스턴스이름을 넣어서 설치.
+
+1. 인스턴스 기능 설치 : 서버 서비스, 각각 인스턴스 마다 설치(Server Service).
+	- 데이터베이스 엔진 서비스
+    공유 기능 설치 : 모든 인스턴스에서 공유되는 기능이 설치(Client 도구들).
+	- 클라이언트 도구 연결, 클라이언트 도구 이전 버전과의 호환성, 클라이언트 도구 SDK, SQL 클라이언트 연결 SDK
+
+2. 인증모드 : 
+   - Windows 인증모드(보안이 강하다. 회사내부에서만 접근, 집에서는 접근이 안된다.)
+   - 혼합모드(Windows 인증 + SQL 인증) <== 실무에서 사용.		<== 선택
+	sa : 최고 관리자 계정(System Administrator) : 1234
+	<<현재사용자 추가>> : 현재 Windows에 로그온한 계정이 MS-SQL을 관리하는 최고 권한을 부여해줌.
+
+
+MS-SQL Server 설치 완료후 Client 도구 설치 (SSMS : MS SQL Server Management Studio)
+
+client 접속 도구(SSMS)			Server Service
+
+
+====================================================================
+
+MySQL 설치
+
+Developer Default 선택
+
+사용포트 : TCP 3306
+
+최고 사용자 계정 : root:1234
+
+=====================================
+
+방화벽 세팅 (실행창에서 wf.msc => 인바운드 오른쪽클릭 새규칙)
+
+  - Oracle : TCP 1521
+  - MS-SQL : TCP 1433
+  - My-SQL : TCP 3306
+
+hostname : 컴퓨터 이름. localhost(자기자신의 컴퓨터), 127.0.0.1(자기자신의 컴퓨터)
+집	DESKTOP-JN87R8M 
+학원
+
+whoami
+ desktop-jn87r8m\tbe2b 
+
+
+VM : WS 2019
+
+
+ 1. MS-SQL설치, SSMS 설치, 방화벽 오픈(TCP 1433)
+ 2. My-SQL설치, Developer Default 설치, (MySQL Server, 워크벤치), 방화벽 오픈(TCP 3306)
+
+
+=============================================================
+
+
+Client  <===============================================> Server
+SQLDeveloper							 Oracle Server (TCP 1521)
+SSMS(SQL Server Management Studio)				 MS-SQL Server (TCP 1433)
+WorkBench							 My-SQL Server (TCP 3306)
+
+1. DataBase (XE) : 데이터(정보)를 저장.
+  - 테이블(데이터를 저장), 인덱스, 뷰, 저장프로시져, 함수, 트리거, 스퀀스  <== Object(객체)
+
+2. DBMS(Data Base Management System)
+   - Oracle, sybase, infomix, MSSQL, MySQL.....  <== Windows Server, Linux, Unix   <== Server OS 설치
+   - CPU, RAM 를 Server 리소스를 사용
+   - 보안(계정) 
+   - 트랜잭션 처리.
+
+   Excel   <==  개인용 DB
+
+3. R-DBMS(관계형 DBMS) : 데이터베이스의 테이블은 모델링(중복제거, 성능향상) 되어 있다.
+	- 테이블과 테이블은 관계를 맺고 있다. 테이블의 Join을 통해서 검색.
+
+4. Query : 질의
+   구조화된 질의 
+
+5. SQL 종류
+   - DDL(Data Definition Language) : 데이터 정의 언어 ( 객체를 생성, 수정, 삭제) : Create, Alter, Drop
+   - DML(Data Manipulation Language) : 데이터 조작 언어 ( 레코드(로우) 를 생성, 수정, 삭제) : Insert, update, delete  <== 테이블의 값을 조작
+   - TCL(Transaction Control Language) : 데이터 컨트롤 언어 (계정의 권한을 부여, 제거) : Grant(부여), Invoke, deny
+   - DQL(Data Query Language) : 데이터 검색 언어 : Select
+
+
+
+
+
+
+
+
