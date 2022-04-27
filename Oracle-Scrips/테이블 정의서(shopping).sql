@@ -119,3 +119,121 @@ add (zipcode varchar2(7));
 
 alter table tb_zipcode
 drop primary key;
+
+-- 강사님ver
+----------테이블 설계 ------------
+CREATE TABLE tb_zipcode(
+    zipcode VARCHAR2(7) NOT NULL CONSTRAINT PK_tb_zipcode_zipcode PRIMARY KEY,
+    sido VARCHAR2(30),
+    gugum VARCHAR2(30),
+    dong VARCHAR2(30),
+    bungi VARCHAR2(30)
+    );
+    
+    
+CREATE TABLE member(
+    id VARCHAR(20) NOT NULL CONSTRAINT PK_member_id PRIMARY KEY,
+    pwd VARCHAR(20),
+    name VARCHAR(20),
+    zipcode VARCHAR(7), CONSTRAINT FK_member_zipcode_tb_zipcode FOREIGN KEY (zipcode) REFERENCES tb_zipcode(zipcode)
+    );
+
+CREATE TABLE products (
+    product_code VARCHAR2(20) NOT NULL CONSTRAINT PK_products_product_code PRIMARY KEY,
+    product_name VARCHAR2(100),
+    product_kind CHAR(1),
+    product_price1 VARCHAR2(10),
+    product_price2 VARCHAR2(10),
+    product_content VARCHAR2(1000),
+    product_image VARCHAR2(50),
+    sizeSt VARCHAR2(5),
+    sizeEt VARCHAR2(5),
+    product_quantity VARCHAR2(5),
+    useyn CHAR(1),
+    indate DATE
+    );
+    
+    CREATE TABLE orders(
+    o_seq NUMBER(10) NOT NULL CONSTRAINT PK_orders_o_seq PRIMARY KEY,
+    product_code VARCHAR2(20), CONSTRAINT FK_orders_product_code FOREIGN KEY (product_code) REFERENCES products(product_code),
+    id VARCHAR2(16), CONSTRAINT FK_orders_id_member FOREIGN KEY (id) REFERENCES member(id),
+    product_size VARCHAR2(5),
+    quantity VARCHAR2(5),
+    result CHAR(1),
+    indate DATE
+    );
+    
+    
+    drop table zipcode 
+    
+ ---zip.sql 적용시 실제 테이블과 다른 점을 수정 해서 insert 하시오.. 
+ 
+select * from tb_zipcode;
+
+-- 트랜잭션 발생 : DML ( insert, update, delete <== commit)
+ 
+    -- 1. 누락 컬럼 추가 (zipco
+alter table tb_zipcode
+add zip_seq varchar2(30) ; 
+
+
+-- 2. 컬럼이름 변경. (bungi  ==> bunji) 수정
+alter table tb_zipcode
+rename column bungi to bunji; 
+
+alter table tb_zipcode
+rename column gugum to gugun; 
+
+-- 3. 부족한 자리수 늘려주기
+Alter Table tb_zipcode
+modify ZIPCODE varchar2 (100);
+
+Alter Table tb_zipcode
+modify DONG varchar2 (100);
+
+-- 4. 제약 조건 잠시 비활성화 하기 . (잠시 비활성화 하기)   
+    -- <== Bulk Insert(대량으로 Insert) : 제약 조건으로 인해서 insert 되는 속도가 굉장히 느립니다.
+    
+    
+alter table tb_zipcode
+disable constraint PK_tb_zipcode_zipcode    -- 오류 발생 : member 테이블의 zipcode 컬럼이 참조하고 있다.
+
+alter table tb_zipcode
+disable constraint PK_tb_zipcode_zipcode cascade;   -- member 테이블의 FK가 적용된 제약조건도 함께 disable
+
+select * from user_constraints
+where table_name in ('MEMBER', 'TB_ZIPCODE');
+
+select constraint_name, table_name, status from user_constraints
+where table_name in ('MEMBER', 'TB_ZIPCODE');
+
+
+select * from tb_zipcode
+where zip_seq = '4';
+
+-- zip.sql insert
+
+select count(*) from tb_zipcode;
+
+truncate table tb_zipcode;   -- 기존의 레코드만 모두 제거(빠르게 모든 레코드 삭제)
+
+delete tb_zipcode;           -- 기존의 레코드만 모두 제거(대량일 경우 삭제가 느리다)
+commit;
+
+-- 제약 조건 활성화 하기 
+alter table member
+enable novalidate constraint FK_member_zipcode_tb_zipcode;
+
+alter table tb_zipcode
+enable novalidate constraint PK_tb_zipcode_zipcode ;
+
+select constraint_name, table_name, status from user_constraints
+where table_name in ('MEMBER', 'TB_ZIPCODE');
+
+-- zip.seq 컬럼의 정렬이 제대로 안된 이유, 제대로 정렬되도록 해 보세요.
+    -- 문자 정렬 형식으로 출력됨, to_number 로 숫자로 형 변환후 정렬.
+
+select * from tb_zipcode
+order by to_number(zip_seq, 99999999);
+
+truncate table tb_zipcode;
