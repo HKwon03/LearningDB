@@ -255,3 +255,5 @@ drop index idx_emp_copy91_allsal;
 show user;
 create user usertest01 identified by 1234;
 
+
+
