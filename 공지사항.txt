@@ -49,3 +49,6 @@ ERwin 설치(32bit), 모델링
 
 5월2일
 PL/SQL
+
+5월3일
+Procedure
