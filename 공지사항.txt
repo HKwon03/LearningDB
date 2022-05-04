@@ -52,3 +52,8 @@ PL/SQL
 
 5월3일
 Procedure
+
+5월4일
+Trigger
+MSSQL
+MYSQL
