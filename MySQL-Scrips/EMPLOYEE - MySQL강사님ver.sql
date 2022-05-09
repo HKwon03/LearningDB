@@ -86,8 +86,9 @@ select dno , count(*) , max(salary) , avg(salary)
 from employee
 group by dno ; 
 
+create table emp_copy select * from employee;
 
-
+select * from emp_copy;
 
 
 
