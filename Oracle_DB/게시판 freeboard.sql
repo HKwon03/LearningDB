@@ -42,14 +42,14 @@ order by masterid desc, replaynum asc, step asc , id asc;
 -- masterid     : 글의 답변에 대한 그룹핑, 
         --id 컬럼의 값이 그대로 들어간 경우, 답변글이 아니다. 처음글
         
--- replayNum : 답변글에 대한 넘버링.(1, 2, 3...)
+-- replayNum : 답변글의 그룹핑, 답변글에 대한 넘버링.(1, 2, 3...)
 -- step      : 답변글의 깊이
         -- 0 : 처음글(자신의 글, 답변글x)
         -- 1 : 답변글o
         -- 2 : 답변의 답변
         -- 3 : 답변의 답변의 답변
 
-
+select * from freeboard order by id desc;
 
 
 
