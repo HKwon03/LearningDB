@@ -51,11 +51,25 @@ order by masterid desc, replaynum asc, step asc , id asc;
 
 select * from freeboard order by id desc;
 
+select * from freeboard 
+order by masterid desc, replaynum asc, step asc , id asc;
+
+INSERT INTO freeboard(id, name, password, email, subject, content,
+inputdate, masterid, readcount, replaynum, step) 
+values(37, '홍길동5', '1234', 'ccc@ccc.com','제목 5','내용 5 내용 5 \' 내용 5',
+'22-05-13 11:55 오전',37,0,0,0);
+
+select * from freeboard 
+where name like '%정국%' or 
+    subject like '%정국%' order by id desc;
 
 
+create table guestboard(
+    name varchar2(10),
+    email varchar2(50),
+    inputdate varchar2(40) primary key,
+    subject varchar2(20),
+    content varchar2(2000)
+);
 
-
-
-
-
-
+select * from guestboard;
