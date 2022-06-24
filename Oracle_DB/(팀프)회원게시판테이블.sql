@@ -43,3 +43,5 @@ create table Bbs(
 select * from Users;
 
 select * from Bbs;
+
+SELECT instance FROM v$thread;
